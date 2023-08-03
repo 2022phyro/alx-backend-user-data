@@ -12,7 +12,7 @@ def hash_password(password: str) -> bytes:
     Returns:
         bytes: the hashed password
     """
-    result = hashpw(password.encode('utf-8'), gensalt())
+    result = hashpw(password.encode(), gensalt())
     return result
 
 
@@ -24,4 +24,4 @@ def is_valid(hashed_password: bytes, password: str) -> bool:
     Returns:
         bool: True or false depending on outcome
     """
-    return checkpw(password.encode('utf-8'), hashed_password)
+    return checkpw(password.encode(), hashed_password)
