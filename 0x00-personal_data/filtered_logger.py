@@ -9,12 +9,13 @@ from os import environ
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
 
 
-def filter_datum(fields, redaction, message, separator):
+def filter_datum(fields: List[str], redaction: str,
+                 message: str, separator: str):
     """Filter data and obfuscate necessary fields"""
-    val = message
     for x in fields:
-        val = re.sub(f'{x}=([^;]+);', f"{x}={redaction}{separator}", val)
-    return val
+        message = re.sub(f'{x}=([^{separator}]+){separator}',
+                         f"{x}={redaction}{separator}", message)
+    return message
 
 
 class RedactingFormatter(logging.Formatter):
@@ -57,7 +58,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> mysql.connector.connection:
+def get_db() -> mysql.connector.MySQLConnection:
     """This establishes a connection to a specified database
     Returns:
         mysql.connector.connection: A connection
