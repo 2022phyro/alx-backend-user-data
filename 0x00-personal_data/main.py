@@ -3,10 +3,12 @@
 Main file
 """
 
-filter_datum = __import__('filtered_logger').filter_datum
+get_db = __import__('filtered_logger').get_db
 
-fields = ["password", "date_of_birth"]
-messages = ["name=eggyemail=eggmin@eggsample.comypassword=eggcellentydate_of_birth=12/12/1986y", "name=bobyemail=bob@dylan.comypassword=bobbycoolydate_of_birth=03/04/1993y"]
-
-for message in messages:
-    print(filter_datum(fields, 'xxx', message, 'y'))
+db = get_db()
+cursor = db.cursor()
+cursor.execute("SELECT COUNT(*) FROM users;")
+for row in cursor:
+    print(row[0])
+cursor.close()
+db.close()
