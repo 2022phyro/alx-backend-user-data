@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """This file deals with password validation
 """
-from bcrypt import hashpw, gensalt, checkpw
+import bcrypt
 
 
 def hash_password(password: str) -> bytes:
@@ -12,7 +12,7 @@ def hash_password(password: str) -> bytes:
     Returns:
         bytes: the hashed password
     """
-    result = hashpw(password.encode(), gensalt())
+    result = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     return result
 
 
@@ -24,4 +24,4 @@ def is_valid(hashed_password: bytes, password: str) -> bool:
     Returns:
         bool: True or false depending on outcome
     """
-    return checkpw(password.encode(), hashed_password)
+    return bcrypt.checkpw(password.encode(), hashed_password)
