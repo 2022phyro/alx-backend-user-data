@@ -42,4 +42,3 @@ def forbidden():
       - it raisess an error
     """
     abort(403)
-
