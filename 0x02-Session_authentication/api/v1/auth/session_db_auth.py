@@ -17,9 +17,9 @@ class SessionDBAuth(SessionExpAuth):
     def user_id_for_session_id(self, session_id=None) -> str:
         """Overloads the parent class method to search for
         the session in the database"""
-        sess = super().user_id_for_session_id(session_id)
-        if sess:
-            return sess
+        # sess = super().user_id_for_session_id(session_id)
+        # if sess:
+        #     return sess
         session = UserSession().search(
             {'session_id': session_id})
         if not session and session[0]:
