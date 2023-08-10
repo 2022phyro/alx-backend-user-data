@@ -3,6 +3,7 @@
 from flask import request
 from typing import List, TypeVar
 import os
+from models.user import User
 
 
 class Auth:
@@ -52,3 +53,16 @@ class Auth:
             return None
         s_name = os.environ.get('SESSION_NAME')
         return request.cookies.get(s_name)
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Gets the current user
+        Returns:
+            _type_: the User instance
+        """
+        s_od = self.session_cookie(request)
+        if not s_od:
+            return None
+        user_id = self.user_id_for_session_id(s_od)
+        if not user_id:
+            return None
+        return User.get(user_id)
