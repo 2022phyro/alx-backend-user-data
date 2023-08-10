@@ -66,7 +66,7 @@ def authorize() -> None:
                              '/api/v1/auth_session/login/'
                              ]):
         return
-    if not ((auth.authorization_header(request)) and
+    if not ((auth.authorization_header(request)) or
             auth.session_cookie(request)):
         abort(401)
     iuser = auth.current_user(request)
