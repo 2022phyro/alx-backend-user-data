@@ -2,7 +2,6 @@
 """Our base authentication class to inherit from"""
 from flask import request
 from typing import List, TypeVar
-import os
 
 
 class Auth:
@@ -45,9 +44,3 @@ class Auth:
         """Does nothing. Meant to be overidden when inherited
         """
         return None
-
-    def session_cookie(self, request=None) -> str:
-        if not request:
-            return None
-        s_name = os.environ.get('SESSION_NAME')
-        return request.cookies.get(s_name)
