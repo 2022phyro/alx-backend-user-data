@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""THis module sotrs our basic session auth class"""
+"""This module sotrs our basic session auth class"""
 from api.v1.auth.auth import Auth
 from models.user import User
 import uuid
