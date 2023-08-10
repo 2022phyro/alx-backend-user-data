@@ -35,3 +35,23 @@ class SessionAuth(Auth):
                 isinstance(session_id, str)):
             return None
         return self.user_id_by_session_id.get(session_id)
+
+    def destroy_session(self, request=None) -> bool:
+        """Destroys or deletes a session
+
+        Args:
+            request (_type_, optional): the request.
+
+        Returns:
+            bool: if the session was deleted
+        """
+        if not request:
+            return False
+        session = self.session_cookie(request)
+        if not session:
+            return False
+        user_id = self.user_id_for_session_id(session)
+        if not user_id:
+            return False
+        self.user_id_by_session_id.pop(session)
+        return True
