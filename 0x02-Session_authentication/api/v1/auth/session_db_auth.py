@@ -31,9 +31,9 @@ class SessionDBAuth(SessionExpAuth):
     def destroy_session(self, request=None) -> bool:
         """Overloads the parent class method to
         destroy the class in the database"""
-        val = super().destroy_session(request)
-        if val:
-            return val
+        # val = super().destroy_session(request)
+        # if val:
+        #     return val
         if not request:
             return False
         session = self.session_cookie(request)
@@ -41,7 +41,7 @@ class SessionDBAuth(SessionExpAuth):
             return False
         curr = UserSession().search(
             {'session_id': session})
-        if not curr:
+        if not curr or curr == []:
             return False
         curr[0].remove()
         return True
