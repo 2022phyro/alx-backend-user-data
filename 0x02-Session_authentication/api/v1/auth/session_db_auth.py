@@ -9,6 +9,8 @@ class SessionDBAuth(SessionExpAuth):
     def create_session(self, user_id=None) -> str:
         """Creates a new session and saves it to
         the database"""
+        if not user_id:
+            return None
         ses_id = super().create_session(user_id)
         session = UserSession(user_id=user_id, session_id=ses_id)
         session.save()
@@ -18,11 +20,11 @@ class SessionDBAuth(SessionExpAuth):
         """Overloads the parent class method to search for
         the session in the database"""
         # sess = super().user_id_for_session_id(session_id)
-        # if sess:
-        #     return sess
+        if not session_id:
+            return None
         session = UserSession().search(
             {'session_id': session_id})
-        if not session and session[0]:
+        if not session:
             return None
         return session[0].user_id
 
@@ -41,5 +43,5 @@ class SessionDBAuth(SessionExpAuth):
             {'session_id': session})
         if not curr:
             return False
-        curr.remove()
+        curr[0].remove()
         return True
