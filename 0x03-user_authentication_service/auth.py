@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Authentication module"""
 import bcrypt
-from db import DB
-from user import User
-import uuid
 
 
 def _hash_password(password: str) -> str:
@@ -13,5 +10,5 @@ def _hash_password(password: str) -> str:
     Returns:
         bytes: the hashed password in bytes
     """
-    pwd =  bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    pwd = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     return pwd
