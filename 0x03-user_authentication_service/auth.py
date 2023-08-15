@@ -6,11 +6,12 @@ from user import User
 import uuid
 
 
-def _hash_password(password: str) -> bytes:
+def _hash_password(password: str) -> str:
     """This hashes a password using bcrypt
     Args:
         password (str): the password to be hashed
     Returns:
         bytes: the hashed password in bytes
     """
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    pwd =  bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    return pwd
