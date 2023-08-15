@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """A minimalist app"""
 from flask import Flask, jsonify, abort, request
+from auth import Auth
 
+AUTH = Auth()
 app = Flask(__name__)
 
 
@@ -11,5 +13,16 @@ def greet():
     return jsonify({"message": "Bienvenue"})
 
 
+@app.route("/users", methods=['POST'], strict_slashes=False)
+def signup():
+    em = request.form.get('email')
+    pwd = request.form.get('password')
+    try:
+        user = AUTH.register_user(em, pwd)
+        return jsonify({"email": em, "message": "user created"}), 200
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000", debug=True)
+    app.run(host="0.0.0.0", port="5000")
