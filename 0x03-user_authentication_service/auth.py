@@ -4,6 +4,7 @@ import bcrypt
 from db import DB, User, NoResultFound, InvalidRequestError
 import uuid
 
+
 def _hash_password(password: str) -> str:
     """This hashes a password using bcrypt
     Args:
