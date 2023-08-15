@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-# from sqlalchemy.orm.exc import Not
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 from user import Base, User
 
 
@@ -43,3 +44,16 @@ class DB:
         """Attempts to find a user"""
         user = self._session.query(User).filter_by(**kw).one()
         return user
+
+    def update_user(self, user_id: int, **kw) -> None:
+        """Attempts to update a user"""
+        try:
+            user = self.find_user_by(id=user_id)
+            for k, v in kw.items():
+                if hasattr(user, k):
+                    setattr(user, k, v)
+                else:
+                    raise ValueError
+            self._session.commit()
+        except (NoResultFound, InvalidRequestError):
+            return

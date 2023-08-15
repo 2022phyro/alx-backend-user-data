@@ -70,12 +70,12 @@ class DB:
         """
         try:
             user = self.find_user_by(id=user_id)
-            if user:
-                for k, v in kw.items():
-                    if hasattr(user, k):
-                        setattr(user, k, v)
-                    else:
-                        raise ValueError
-                self._session.commit()
+            for k, v in kw.items():
+                if hasattr(user, k):
+                    print("yes")
+                    setattr(user, k, v)
+                # else:
+                #     raise ValueError
+            self._session.commit()
         except:
             return
