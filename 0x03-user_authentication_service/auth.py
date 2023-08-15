@@ -2,7 +2,7 @@
 """Authentication module"""
 import bcrypt
 from db import DB, User, NoResultFound, InvalidRequestError
-
+import uuid
 
 def _hash_password(password: str) -> str:
     """This hashes a password using bcrypt
@@ -13,6 +13,11 @@ def _hash_password(password: str) -> str:
     """
     pwd = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     return pwd
+
+def _generate_uuid() -> str:
+    """Generate a uuid"""
+    _id = str(uuid.uuid4())
+    return _id
 
 
 class Auth:
