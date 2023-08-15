@@ -1,81 +1,37 @@
-#!/usr/bin/env python3
-"""DB module
-"""
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
-from typing import Union, Optional
-from user import Base, User
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
 
 
-class DB:
-    """DB class
+class Auth:
+    """Auth class to interact with the authentication database.
     """
 
-    def __init__(self) -> None:
-        """Initialize a new DB instance
-        """
-        self._engine = create_engine("sqlite:///a.db", echo=False)
-        Base.metadata.drop_all(self._engine)
-        Base.metadata.create_all(self._engine)
-        self.__session = None
+    def __init__(self):
+        """Initializes the db"""
+        self._db = DB()
 
-    @property
-    def _session(self) -> Session:
-        """Memoized session object
-        """
-        if self.__session is None:
-            DBSession = sessionmaker(bind=self._engine)
-            self.__session = DBSession()
-        return self.__session
+    def register_user(self, email: str, password: str) -> User:
+        """Tries to register a user"""
+        try:
+            user = self._db.find_user_by(email=email)
+            raise ValueError(f'User {email} already exists')
+        except (NoResultFound, InvalidRequestError):
+            pwd = _hash_password(password)
+            return self._db.add_user(email, pwd)
 
-    def add_user(self, email: str, hashed_password: str
-                 ) -> Optional[User]:
-        """Adds a new user to the database
+    def valid_login(self, email: str, password: str,) -> bool:
+        """Validates a login
         Args:
-            email (str): the user's email
-            hashed_password (str): the encoded password
+            email (str): the user email
+            password (str): the user password
         Returns:
-            Union[User, None]: the user or none
-        """
-        user = User()
-        user.email = email
-        user.hashed_password = hashed_password
-        self._session.add(user)
-        self._session.commit()
-        return user
-
-    def find_user_by(self, **kw) -> User:
-        """Retrieves a user from the database
-        Raises:
-            NoResultFound: If no result is found
-        Returns:
-            User if found
-        """
-        user = self._session.query(User).filter_by(**kw).one()
-        if not user:
-            raise NoResultFound
-        return user
-
-    def update_user(self, user_id: str, **kw) -> None:
-        """Updates a user
-        Args:
-            user_id (str): the user to be updated
-        Raises:
-            ValueError: if the field doesn't exist for
-            the user
+            bool: if the passwords are a match or not
         """
         try:
-            user = self.find_user_by(id=user_id)
-            for k, v in kw.items():
-                if hasattr(user, k):
-                    print("yes")
-                    setattr(user, k, v)
-                # else:
-                #     raise ValueError
-            self._session.commit()
-        except:
-            return
+            user = self._db.find_user_by(email=email)
+            pwd = password.encode()
+            return bcrypt.checkpw(pwd, user.hashed_password)
+        except (NoResultFound, InvalidRequestError):
+            return False
+
+    def _generate_uuid(self) -> str:
+        """Returns a new UUID"""
+        return str(uuid.uuid4())
