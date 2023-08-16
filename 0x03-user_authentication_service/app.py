@@ -76,9 +76,14 @@ def update_password():
     em = request.form.get('email')
     pwd = request.form.get('new_password')
     r_token = request.form.get('reset_token')
-    s_id = AUTH.create_session(em)
-    user = AUTH.get_user_from_session_id
-    
+    if not (em or pwd or r_token):
+        abort(400)
+    try:
+        AUTH.update_password(r_token, pwd)
+    except ValueError:
+        abort(403)
+    return jsonify({"email": em, "message": 'Password updated'})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
