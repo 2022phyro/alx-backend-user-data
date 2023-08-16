@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A minimalist app"""
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, redirect, url_for
 from auth import Auth
 
 AUTH = Auth()
@@ -37,6 +37,17 @@ def login():
     res = jsonify({'email': em, 'message': 'logged in'})
     res.set_cookie('session_id', s_id)
     return res
+
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """Logs out a user"""
+    s_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(s_id)
+    if not user:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect(url_for('/'))
 
 
 if __name__ == "__main__":
